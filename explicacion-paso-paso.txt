@@ -1,0 +1,9 @@
+Prueba técnica OpiTech
+
+	-> Parte del Backend : 
+
+1. Diagrama de clases: 
+
+Primero se identifican los actores principales en dicho sistema; Empresa, Asesor, Cliente, Viaje, Tipo de viaje
+
+Luego de esto, se asigna la relación entre cada uno de los actores en el sistema. Vale la pena mencionar que la relación entre <Cliente> y <Viaje> es de muchos a muchos, por ende se crea una clase auxiliar, en nuestro caso la nombramos <Factura>. También se tiene que las clases <Cliente> y <Asesor> heredan de la clase <Persona>. Además se agregan algunas clases extra, para hacer más eficiente el sistema

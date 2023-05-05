@@ -1,0 +1,83 @@
+*************** Función: list_trips() *************** 
+
+Descripción: Lista todas las opciones de viajes disponibles.
+Parámetros: Ninguno.
+Retorno: Ninguno.
+
+INICIO
+$id_company = $session->get('id_company');            //Obtiene el id de la compañía de la sesión actual.
+$trips = Company :: find($id_company)->trips()->get() //Obtiene todos los viajes de la compañía.
+
+foreach($trips as $trip):                              //Recorre todos los viajes.
+    if($trip->status == "Activo"):
+        type = Type :: find($trip->id_type);          //Obtiene el tipo de viaje.
+        type_name = $type->type_name;                 
+        price = $trip->price;                      
+        Mostrar
+        {
+                Nombre: $trip->trip_name              //Muestra información de cada uno de los viajes activos
+                Lugar: $trip->place                   //actualmente.
+                Fecha inicial: $trip->start_date
+                Fecha final: $trip->final_date
+                Tipo: $type_name
+                Precio: $price
+        } 
+    endif
+endforeach
+FIN
+
+*************** Función: create_client() *************** 
+
+Descripción: Guarda la información de un nuevo cliente.
+Parámetros: Nombre, edad, número de telefono, fecha de nacimiento, id del asesor de este cliente.
+Retorno: Ninguno.
+
+INICIO
+    
+$client = Client :: create ([
+    'person_name' => $request->name,                   //Guarda la información del nuevo cliente.
+    'age' => $request->age,
+    'phone_number' => $request->phone_number,
+    'birth_date' => $request->birth_date,
+    'id_adviser' => $request->id_adviser,
+]);
+
+FIN
+
+*************** Función: book_trip() *************** 
+
+Descripción: Crea una reserva del viaje.
+Parametros: Id del cliente, Id del viaje, Método de pago, Fecha de creación, Precio total.
+Retorno: Ninguno.
+
+INICIO
+
+$invoice = Invoice :: create ([
+    'id_client' => $request->id_client,                //Guarda la información de la reserva.
+    'id_trip' => $request->id_trip,
+    'payment_method' => $request->payment_method,
+    'creation_date' => $request->creation_date,
+    'total_price' => $request->total_price,
+    'state' => "En reserva",                          //Se inicializa en reserva, luego se 
+]);                                                   //puede cambiar a pagado o cancelado.
+
+FIN 
+
+*************** Función: buy_trip() *************** 
+
+Descripción: Compra el viaje reservado.
+Parametros: id del viaje, id del cliente.
+Retorno: Ninguno.
+ 
+INICIO
+
+$client = Client :: find($request->id_client);          //Obtiene el cliente.
+$invoices = $client -> invoices()->get();               //Obtiene las facturas del cliente.
+
+$invoice = $invoices->where('trip_id', '=', $request->trip_id)
+                    ->where('state', '=', 'En reserva') 
+
+$invoice->state = "Pagado"                             //Cambia el estado de la factura a pagado.
+$invoice->save();
+
+FIN
