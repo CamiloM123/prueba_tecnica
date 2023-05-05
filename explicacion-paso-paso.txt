@@ -2,8 +2,38 @@ Prueba técnica OpiTech
 
 	-> Parte del Backend : 
 
-1. Diagrama de clases: 
+1. Análisis del problema
+
+	a. Diagrama de clases: 
 
 Primero se identifican los actores principales en dicho sistema; Empresa, Asesor, Cliente, Viaje, Tipo de viaje
 
-Luego de esto, se asigna la relación entre cada uno de los actores en el sistema. Vale la pena mencionar que la relación entre <Cliente> y <Viaje> es de muchos a muchos, por ende se crea una clase auxiliar, en nuestro caso la nombramos <Factura>. También se tiene que las clases <Cliente> y <Asesor> heredan de la clase <Persona>. Además se agregan algunas clases extra, para hacer más eficiente el sistema
+Luego de esto, se asigna la relación entre cada uno de los actores en el sistema. Vale la pena mencionar que la relación entre <Cliente> y <Viaje> es de muchos a muchos, por ende se crea una clase auxiliar, en nuestro caso la nombramos <Factura>. También se tiene que las clases <Cliente> y <Asesor> heredan de la clase <Persona>. Además se agregan algunas clases extra, para hacer más eficiente el sistema. 
+
+Por último, los cuatro métodos principales para la funcionalidad del sistema se ubican en la clase empresa, para hacer más fácil el acceso a toda la base de datos. 
+
+	b. Pseudocódigo: 
+
+Estoy trabajando con una sémantica muy parecida a cómo funciona el framework de Laravel y su ORM, ya que estoy bastante familiarizado con este framework. 
+
+Para listar las opciones de viaje de la compañia, vamos a crear un método <list_trips()>,con el cuel intentaremos obtener todos viajes de la compañía en forma de array, y luego de esto con un foreach filtrar esta lista para que solo se muestre la información de los viajes que están actualmente activos.
+
+Para la funcionalidad de guardar la información de un cliente, creamos el método <create_client()>, con el cual obtenemos los datos necesarios através de la request, como los son el nombre, edad, número de telefono, etc... Luego accedemos a la base de datos y creamos un nuevo registro en la tabla de clientes con estos parametros.
+
+Por otro lado, a la hora de crear una reserva de un viaje, creamos el método <book_trip()>, este método recibe la información necesaria por parametros, en este caso serían el id del cliente, el id del viaje, el precios, etc... Luego de esto accedemos a la base de datos y creamos un nuevo registro en la tabla de facturas, cabe resaltar que el estado de esta factura sería el de "En reserva", estado que luego se podría actualizar con "Pagado" o "Cancelado".
+
+Por último, para comprar el viaje reservado creamos el método <buy_trip()>, el método recibe la información del cliente (su id) y el id del viaje, con esto busca entre las facturas de ese cliente en especifico por una que esté en estado "En reserva" y a su vez el id del viaje coincida, ya con esto actualiza este estado a "Pagado". 
+
+
+2. Consultas SQL
+
+a. Para esta consulta accedemos a la tabla de Clientes y filtramos usando las facturas de esos clientes, en las cuales el valor total sea mayor a 5.000.000
+
+b. Hacemos el mismo paso anterior, filtrando usando las facturas de los clientes, pero en este caso comparamos el método de pago en cada factura por uno que sea igual a "Efectivo"
+
+c. Para este caso usamos la tabla de la cual hereda que es Persona, y esta contiene una tabla adjunta que es la de dirección, en este caso comparamos la edad de este cliente que sea mayor a 40 y además de esto, que en la tabla de Direción la ciudad sea igual a "Bogotá"
+
+d. Para esto iremos a la tabla de Viajes, la cual contiene una tabla adjunta llamada tipo de viaje, y también accedemos a las facturas de esos viajes, las condiciones que ponemos es que, en la tabla de tipo de viaje su nombre sea "Negocios" o "Turismo", en la tabla de Viajes su estado sea "Finalizado" y por ultimo en la tabla de Facturas que el método de pago sea igual a "Tarjeta de crédito"
+
+e. Para esto solo filtramos la tabla de viajes, con el registro de estado, buscando los registros que tengas estado igual a "Activo" o "Cancelado"
+
